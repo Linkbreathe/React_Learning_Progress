@@ -22,7 +22,7 @@ StarrRating.propTypes = {
 }
 
 export default function StarrRating({ maxRating = 5 , 
-    color = "yellow" , 
+    color = "rgb(255, 200, 61)" , 
     size = "16", 
     className="", 
     message = [] ,
