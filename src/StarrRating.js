@@ -42,7 +42,7 @@ export default function StarrRating({ maxRating = 5 ,
     
     function handleRate(rating) {
         setRating(rating);
-        onSetRating(rating);
+        onSetRating && onSetRating(rating);
     }
 
     return (

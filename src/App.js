@@ -103,9 +103,12 @@ function Loader() {
   )
 }
 
-function MovieDetails({ selectedId, onCloseMovie }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const [movie, setMovie] = useState({});
   const [isLoading,setIsLoading] = useState(false);
+  const [userRating,setUserRating] = useState('');
+  const isWatched = watched.map(w => w.imdbID).includes(selectedId);
+  const watchedUserRating = watched.find(w => w.imdbID === selectedId)?.userRating;
 
   const {
     Actors: actors,
@@ -124,6 +127,20 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     imdbID,
     imdbVotes
   } = movie
+
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID,
+      Title: title,
+      Year: year,
+      Poster: poster,
+      imdbRating:Number(imdbRating),
+      runtime: Number(runtime.split(' ').at(0)),
+      userRating:Number(userRating)
+    }
+    onAddWatched(newWatchedMovie);
+    onCloseMovie();
+  }
 
   useEffect(function () {
     async function getMovieDetails() {
@@ -160,10 +177,24 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     
     <section>
     <div className="rating">
-    <StarrRating maxRating={10} size={24}
-    />
-    </div>
+    
+    {
+      !isWatched?
+      <>
+      <StarrRating maxRating={10} size={24} onSetRating={setUserRating}/>
+      { userRating >0 && <button className="btn-add" onClick={handleAdd } >+ Add to list</button> }
+      </>: 
+     
+      <p>you have rated this movie ⭐{watchedUserRating}</p>
+    
+    }
 
+    
+    
+    
+    
+    
+    </div> 
       <p>
         <em>{plot}</em>
       </p>
@@ -228,6 +259,16 @@ export default function App() {
     SetSelectedId(null)
   }
 
+  function handleAddWatched(movie){
+    // watched.includes(movie.title) ? alert("You already watched this movie") : setWatched([...watched, movie])
+    setWatched([...watched, movie])
+  }
+
+  function handleDeleteWatched(id){
+    console.log(id)
+    setWatched(watched.filter(movie => movie.imdbID !== id))
+  }
+
   return (
     <>
       <NavBar>
@@ -243,10 +284,16 @@ export default function App() {
         <Box>
           <>
             {
-              selectedId ? <MovieDetails onCloseMovie={handleCloseMovie} selectedId={selectedId} /> :
+              selectedId ? 
+              <MovieDetails 
+                onCloseMovie={handleCloseMovie} 
+                onAddWatched={handleAddWatched}
+                
+                watched={watched}
+                selectedId={selectedId} /> :
                 <>
                   <WathchedSummary watched={watched} />
-                  <WatchedList watched={watched} />
+                  <WatchedList onDeleteWatched={handleDeleteWatched} watched={watched} />
                 </>
             }
           </>
@@ -264,21 +311,22 @@ function ErrorMessage({ message }) {
     </p>
   )
 }
-function WatchedList({ watched }) {
+function WatchedList({ watched, onDeleteWatched }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
-        <WatchedMovie movie={movie} key={movie.imdbID} />
+        <WatchedMovie movie={movie} key={movie.imdbID} onDeleteWatched={onDeleteWatched} />
       ))}
     </ul>
   )
 }
 
-function WatchedMovie({ movie }) {
+function WatchedMovie({ movie , onDeleteWatched }) {
+  
   return (
     <li key={movie.imdbID}>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+      <img src={movie.Poster} alt={`${movie.title} poster`} />
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>
@@ -292,6 +340,7 @@ function WatchedMovie({ movie }) {
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
+        <button className="btn-delete" onClick={() => onDeleteWatched(movie.imdbID)}>❌</button>
       </div>
     </li>
   )
@@ -312,11 +361,11 @@ function WathchedSummary({ watched }) {
         </p>
         <p>
           <span>⭐️</span>
-          <span>{avgImdbRating}</span>
+          <span>{avgImdbRating.toFixed(2)}</span>
         </p>
         <p>
           <span>🌟</span>
-          <span>{avgUserRating}</span>
+          <span>{avgUserRating.toFixed(2)}</span>
         </p>
         <p>
           <span>⏳</span>
