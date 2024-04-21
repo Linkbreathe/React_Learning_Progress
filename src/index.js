@@ -24,8 +24,8 @@ function Test(){
 
 root.render(
   <React.StrictMode>
-    {/* <App /> */}
-    <StarrRating maxRating={10}/>
+    <App />
+    {/* <StarrRating maxRating={10}/>
     <StarrRating maxRating={10} color={"red"} size='20' className=""/>
     <StarrRating maxRating={4} 
     color={"blue"} 
@@ -33,7 +33,7 @@ root.render(
     message={['bad','ok','good','excellent']}
     defaultRating={3}
     className=""/>
-    <Test></Test>
+    <Test></Test> */}
   </React.StrictMode>
 );
 

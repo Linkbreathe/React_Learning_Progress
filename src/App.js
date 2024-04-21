@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const tempMovieData = [
   {
@@ -50,8 +50,6 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-
-
 function Logo() {
   return (
     <div className="logo">
@@ -69,8 +67,7 @@ function Numresults({ movies }) {
   )
 }
 
-function Search() {
-  const [query, setQuery] = useState("");
+function Search({query,setQuery}) {
   return (
     <input
       className="search"
@@ -82,7 +79,7 @@ function Search() {
   )
 }
 
-function Box({children}){
+function Box({ children }) {
   const [isOpen, setIsOpen] = useState(true);
   return (<div className="box">
     <button
@@ -91,24 +88,76 @@ function Box({children}){
     >
       {isOpen ? "–" : "+"}
     </button>
-    {isOpen && 
-        children
-      }
+    {isOpen &&
+      children
+    }
   </div>)
 }
+
+function Loader() {
+  return (
+    <p class="loader">Loading...</p>
+  )
+}
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const KEY = "e0ffc06f";
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  // const [query, setQuery] = useState("");
+  const tempQuery = "Interstellar"
+
+  // fetch(`http://www.omdbapi.com/?apikey=${KEY}&t=2001`)
+  // .then( res=>res.json ) // 解析文本转换为json，或者用res.text()转换为文本
+  // .then( data=>console.log(data) )
+
+  useEffect(
+    () => {
+
+      if(query.length < 3){
+        setMovies([]);
+        setError('');
+        return ;
+      }else{
+
+      
+
+      async function fetchMovies() {
+        try {
+          setIsLoading(true);
+          const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
+          if (!res.ok) throw new Error("Something went wrong with fetching movies")
+          const data = await res.json(); // Object
+          if (data.Response === "False") throw new Error("Movie not found")
+          setMovies(data.Search)
+        } catch (err) {
+          setError(err.message);
+          console.log(err)
+        } finally {
+          setIsLoading(false);
+        }
+        
+
+      }
+      fetchMovies();
+    }
+    }, [query]
+  )
+
   return (
     <>
       <NavBar>
+      <Search query={query} setQuery={setQuery}/>
         <Numresults movies={movies} />
       </NavBar>
       <Main>
         <Box>
-          <MovieList movies={movies} />
+          {isLoading && <Loader />}
+          {!isLoading && !error && <MovieList movies = {movies} /> }
+          {error && <ErrorMessage message={error} />}
         </Box>
-
         <Box>
           <>
             <WathchedSummary watched={watched} />
@@ -120,8 +169,14 @@ export default function App() {
   );
 }
 
-
-
+function ErrorMessage({ message }) {
+  return (
+    <p className="error">
+      <span role="img">⚠️</span>
+      {message}
+    </p>
+  )
+}
 function WatchedList({ watched }) {
   return (
     <ul className="list">
@@ -188,7 +243,7 @@ function WathchedSummary({ watched }) {
 function MovieList({ movies }) {
   return (
     <ul className="list">
-      {movies?.map((movie) => (
+      {movies.map((movie) => (
         <Movie movie={movie} key={movie.imdbID} />
       ))}
     </ul>
@@ -213,16 +268,15 @@ function Main({ children }) {
   return (
     <main className="main">
       {children}
-      
+
     </main>
   )
 }
 function NavBar({ children }) {
-  const [query, setQuery] = useState("");
+  
   return (
     <nav className="nav-bar">
-      <Logo />
-      <Search />
+       <Logo />
       {children}
     </nav>
   )
