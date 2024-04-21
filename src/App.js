@@ -142,6 +142,18 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onCloseMovie();
   }
 
+  useEffect(
+    function(){
+      function callback(e){
+        if(e.code === "Escape"){
+          onCloseMovie();
+        }
+      }
+      document.addEventListener("keydown",callback)
+      return function(){
+      document.removeEventListener("keydown",callback)
+      }
+    })
   useEffect(function () {
     async function getMovieDetails() {
       setIsLoading(true)
@@ -153,7 +165,18 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     }
     getMovieDetails();
 
-  }, [selectedId])
+  }, [selectedId]) 
+
+   useEffect(
+    function(){
+      if(!title) return;
+      document.title = `Movie|${title}`;
+
+      return function(){
+        document.title = "🍟usePopcorn"
+      }
+    },[title]
+  )
 
   return (<>
   {isLoading ? <Loader/>:
@@ -230,6 +253,7 @@ export default function App() {
 
   useEffect(
     () => {
+      const controller = new AbortController();
       if (query.length < 3) {
         setMovies([]);
         setError('');
@@ -238,7 +262,7 @@ export default function App() {
         async function fetchMovies() {
           try {
             setIsLoading(true);
-            const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
+            const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`, {signal:controller.signal});
             if (!res.ok) throw new Error("Something went wrong with fetching movies")
             const data = await res.json(); // Object
             if (data.Response === "False") throw new Error("Movie not found")
@@ -251,6 +275,9 @@ export default function App() {
           }
         }
         fetchMovies();
+        return function(){
+          controller.abort();
+        }
       }
     }, [query]
   )
@@ -268,6 +295,8 @@ export default function App() {
     console.log(id)
     setWatched(watched.filter(movie => movie.imdbID !== id))
   }
+
+  
 
   return (
     <>
@@ -288,7 +317,6 @@ export default function App() {
               <MovieDetails 
                 onCloseMovie={handleCloseMovie} 
                 onAddWatched={handleAddWatched}
-                
                 watched={watched}
                 selectedId={selectedId} /> :
                 <>
