@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import StarrRating from "./StarrRating";
 
 const KEY = "e0ffc06f";
@@ -71,6 +71,23 @@ function Numresults({ movies }) {
 }
 
 function Search({ query, setQuery }) {
+  const inputEl = useRef(null)
+
+  useEffect(function () {
+    if(document.activeElement === inputEl.current){
+      return;
+    }
+    function callback(e){
+      if(e.code === "Enter"){
+
+        inputEl.current.focus();
+        setQuery('');
+      }
+    }
+    document.addEventListener("keydown",callback);
+    return ()=>document.removeEventListener("keydown",callback);
+  },[setQuery])
+
   return (
     <input
       className="search"
@@ -78,6 +95,7 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
+      ref={inputEl}
     />
   )
 }
@@ -110,6 +128,14 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const isWatched = watched.map(w => w.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(w => w.imdbID === selectedId)?.userRating;
 
+  const countRef = useRef(0);
+  useEffect(
+    function(){
+      if(userRating) countRef.current ++;
+      console.log(userRating)
+    },[userRating]
+  )
+
   const {
     Actors: actors,
     Country: country,
@@ -136,7 +162,8 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       Poster: poster,
       imdbRating:Number(imdbRating),
       runtime: Number(runtime.split(' ').at(0)),
-      userRating:Number(userRating)
+      userRating:Number(userRating),
+      countRatingDecisions:countRef.current
     }
     onAddWatched(newWatchedMovie);
     onCloseMovie();
@@ -167,7 +194,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
   }, [selectedId]) 
 
-   useEffect(
+  useEffect(
     function(){
       if(!title) return;
       document.title = `Movie|${title}`;
@@ -207,7 +234,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       <StarrRating maxRating={10} size={24} onSetRating={setUserRating}/>
       { userRating >0 && <button className="btn-add" onClick={handleAdd } >+ Add to list</button> }
       </>: 
-     
       <p>you have rated this movie ⭐{watchedUserRating}</p>
     
     }
@@ -234,12 +260,19 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 export default function App() {
 
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedId, SetSelectedId] = useState(null);
-  // const [query, setQuery] = useState("");
+  
+  
+  const [watched, setWatched] = useState(
+    ()=>{
+      const watched = localStorage.getItem("watched");
+      return watched ? JSON.parse(watched) : [];
+    }
+  );
+
   const tempQuery = "Interstellar"
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&t=2001`)
@@ -251,7 +284,7 @@ export default function App() {
     SetSelectedId(selectedId === id ? null : id)
   }
 
-  useEffect(
+  useEffect(  
     () => {
       const controller = new AbortController();
       if (query.length < 3) {
@@ -280,6 +313,13 @@ export default function App() {
         }
       }
     }, [query]
+  )
+
+  /* delete改变了watched，所以会自动删除 */
+  useEffect(
+    function(){
+    localStorage.setItem("watched",JSON.stringify([...watched]))
+    },[watched]
   )
 
   function handleCloseMovie() {
