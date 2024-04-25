@@ -5,6 +5,7 @@ const formatDate = (date) =>
     month: "long",
     year: "numeric"
   }).format(new Date(date));
+
 function CityItem({city}) {
     const {cityName, emoji, date} = city;
     return <li className={styles.cityItem}> 
@@ -13,6 +14,5 @@ function CityItem({city}) {
         <span className={styles.date}>{formatDate(date)}</span>
         <button className={styles.deleteBtn}>&times;</button>
     </li>
-    
 }
 export default CityItem;
