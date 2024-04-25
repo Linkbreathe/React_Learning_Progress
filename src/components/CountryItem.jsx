@@ -7,6 +7,6 @@ function CountryItem({ country }) {
       <span>{country.country}</span>
     </li>
   );
-}
+} 
 
 export default CountryItem;
