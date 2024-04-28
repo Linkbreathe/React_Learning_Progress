@@ -1,40 +1,52 @@
 {
   "cities": [
     {
-      "cityName": "Lisbon",
-      "country": "Portugal",
-      "emoji": "🇵🇹",
-      "date": "2027-10-31T15:59:59.138Z",
-      "notes": "My favorite city so far!",
-      "position": {
-        "lat": 38.727881642324164,
-        "lng": -9.140900099907554
-      },
-      "id": 73930385
-    },
-    {
-      "cityName": "Madrid",
-      "country": "Spain",
-      "emoji": "🇪🇸",
-      "date": "2027-07-15T08:22:53.976Z",
+      "id": "41f9",
+      "cityName": "Bayingolin Mongol Zizhizhou",
+      "country": "China",
+      "date": "2024-04-27T15:19:27.700Z",
       "notes": "",
+      "emoji": "🇨🇳",
       "position": {
-        "lat": 40.46635901755316,
-        "lng": -3.7133789062500004
-      },
-      "id": 17806751
+        "lat": "43.10995646120424",
+        "lng": "86.48437500000001"
+      }
     },
     {
-      "cityName": "Berlin",
-      "country": "Germany",
-      "emoji": "🇩🇪",
-      "date": "2027-02-12T09:24:11.863Z",
-      "notes": "Amazing 😃",
+      "id": "a287",
+      "cityName": "Arhus",
+      "country": "Denmark",
+      "date": "2024-04-27T15:29:34.299Z",
+      "notes": "",
+      "emoji": "🇩🇰",
       "position": {
-        "lat": 52.53586782505711,
-        "lng": 13.376933665713324
-      },
-      "id": 98443197
+        "lat": "56.150977962875416",
+        "lng": "10.200805664062502"
+      }
+    },
+    {
+      "id": "a37a",
+      "cityName": "Nanchang",
+      "country": "China",
+      "date": "2024-04-27T15:36:27.225Z",
+      "notes": "",
+      "emoji": "🇨🇳",
+      "position": {
+        "lat": "28.641127642343225",
+        "lng": "115.91875433921814"
+      }
+    },
+    {
+      "id": "fa5b",
+      "cityName": "Aarhus",
+      "country": "Denmark",
+      "date": "2024-04-28T06:52:56.168Z",
+      "notes": "I want to study here, and I will study here.",
+      "emoji": "🇩🇰",
+      "position": {
+        "lat": "56.16804070459075",
+        "lng": "10.203766822814943"
+      }
     }
   ]
 }
