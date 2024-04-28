@@ -9,7 +9,7 @@ import { useUrlPosition } from '../hooks/useUrlPosition';
 
 function Map() {
   const { cities } = useCities();
-  const [mapPostion, setMapPosition] = useState([40, 0]);
+  const [mapPosition, setMapPosition] = useState([40, 15]);
   const {position:geolocationPosition,isLoading:isLoadingPosition,getPosition} = useGeolocation();
   const [ mapLat, mapLng ] = useUrlPosition();
   useEffect(
@@ -25,12 +25,14 @@ function Map() {
       console.log(geolocationPosition)
     }, [geolocationPosition]
   );
+  cities.map(city => console.log(city))
+
   return (
     <div className={styles.mapContainer} >
       {!geolocationPosition && (
         <Button type="position" onClick={getPosition}> {isLoadingPosition?"Loading...":"Use your current position"} </Button>
       )}  
-      <MapContainer center={mapPostion} zoom={13} scrollWheelZoom={true} className={styles.map}>
+      <MapContainer center={mapPosition} zoom={13} scrollWheelZoom={true} className={styles.map}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -38,7 +40,7 @@ function Map() {
         {
           cities.map(city => {
             return (
-              <Marker position={mapPostion} key={city.id}>
+              <Marker position={[city.position.lat,city.position.lng]} key={city.id}>
                 <Popup>
                   {city.cityName}
                 </Popup>
@@ -46,7 +48,7 @@ function Map() {
             )
           })
         }
-        <ChangeCenter position={mapPostion} />
+        <ChangeCenter position={mapPosition} />
         <DetectClick/>
       </MapContainer>
     </div>
@@ -61,11 +63,8 @@ function ChangeCenter({ position }) {
 
 function DetectClick(){
   const navigate = useNavigate();
-  console.log()
   useMapEvents({
     click:e=>{navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`)}
-    
-    // click:e=>console.log(e)
   })
 }
 
