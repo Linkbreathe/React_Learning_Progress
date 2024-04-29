@@ -1,19 +1,31 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy } from "react";
+import { Suspense } from "react";
 
 import { CitiesContextProvider } from "./components/CitiesContext";
 import { AuthProvider } from "./contexts/fakeAuthContext";
-import Product from "./pages/Product";
-import Pricing from "./pages/Pricing";
-import Homepage from "./pages/Homepage";
-import AppLayOut from "./pages/AppLayOut";
-import Login from "./pages/Login";
-import PageNotFound from "./pages/PageNotFound";
+
 import CityList from "./components/CityList";
+import SpinnerFullPage from "./components/SpinnerFullPage";
 import CountryList from "./components/CountryList";
 import City from "./components/City";
 import Form from "./components/Form";
 import ProtectedRoute from "./pages/ProtectedRoute"
+
+// import Product from "./pages/Product";
+// import Pricing from "./pages/Pricing";
+// import Homepage from "./pages/Homepage";
+// import AppLayOut from "./pages/AppLayOut";
+// import Login from "./pages/Login";
+// import PageNotFound from "./pages/PageNotFound";
+const Homepage = lazy(()=>import("./pages/Homepage"))
+const Pricing = lazy(()=>import("./pages/Pricing"))
+const Product = lazy(()=>import("./pages/Product"))
+const AppLayOut = lazy(()=>import("./pages/AppLayOut"))
+const Login = lazy(()=>import("./pages/Login"))
+const PageNotFound = lazy(()=>import("./pages/PageNotFound"))
+
+
 
 
 const BASE_URL = "http://localhost:9000";
@@ -40,6 +52,7 @@ function App() {
     <AuthProvider>
       <CitiesContextProvider value={{ cities, isLoading }}>
         <BrowserRouter>
+        <Suspense fallback={<SpinnerFullPage />}>
           <Routes>
             <Route index element={<Homepage />} />
             <Route path="product" element={<Product />} />
@@ -64,6 +77,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
+          </Suspense>
         </BrowserRouter>
       </CitiesContextProvider>
     </AuthProvider>
