@@ -1,9 +1,9 @@
-# Link's Global Travel Notes program 🍕
+# Link's Global Travel Notes program 🗺
 
 A tiny Global Travel Notes program mainly be built by:  
-🍔 Frontend: React, Javascript
-🍟 Backend: Mock API  
-🌭 library: Json-server
+🌍 Frontend: React, Javascript
+🏔 Backend: Mock API  
+🏖 library: Json-server
 
 # Timeline ⏰
 
