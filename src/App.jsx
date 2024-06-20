@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useState, useEffect, lazy } from "react";
 import { Suspense } from "react";
 
-import { CitiesContextProvider } from "./components/CitiesContext";
+import { CitiesContextProvider } from "./contexts/CitiesContext";
 import { AuthProvider } from "./contexts/fakeAuthContext";
 
 import CityList from "./components/CityList";
@@ -12,12 +12,7 @@ import City from "./components/City";
 import Form from "./components/Form";
 import ProtectedRoute from "./pages/ProtectedRoute"
 
-// import Product from "./pages/Product";
-// import Pricing from "./pages/Pricing";
-// import Homepage from "./pages/Homepage";
-// import AppLayOut from "./pages/AppLayOut";
-// import Login from "./pages/Login";
-// import PageNotFound from "./pages/PageNotFound";
+
 const Homepage = lazy(()=>import("./pages/Homepage"))
 const Pricing = lazy(()=>import("./pages/Pricing"))
 const Product = lazy(()=>import("./pages/Product"))
@@ -46,7 +41,7 @@ function App() {
       }
     }
     fetchCities();
-    // console.log(cities)
+    //  (cities)
   }, []);
   return (
     <AuthProvider>

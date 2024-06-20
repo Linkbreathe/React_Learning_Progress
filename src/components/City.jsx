@@ -1,5 +1,5 @@
 import { useParams} from "react-router-dom";
-import {useCities,CitiesContextProvider} from "../components/CitiesContext";
+import {useCities,CitiesContextProvider} from "../contexts/CitiesContext";
 import {useEffect} from "react";
 import styles from "./City.module.css";
 import Spinner from "./Spinner";

@@ -2,7 +2,7 @@ import styles from './Map.module.css'
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
-import { useCities } from './CitiesContext';
+import { useCities } from '../contexts/CitiesContext';
 import {useGeolocation} from '../hooks/useGeolocation';
 import Button from "./Button"
 import { useUrlPosition } from '../hooks/useUrlPosition';
@@ -22,10 +22,9 @@ function Map() {
     function () {
       if(geolocationPosition)
         setMapPosition([geolocationPosition.lat,geolocationPosition.lng])
-      console.log(geolocationPosition)
     }, [geolocationPosition]
   );
-  cities.map(city => console.log(city))
+  cities.map(city =>  (city))
 
   return (
     <div className={styles.mapContainer} >

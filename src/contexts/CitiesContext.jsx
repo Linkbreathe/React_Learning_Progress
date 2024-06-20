@@ -87,7 +87,6 @@ function CitiesContextProvider({ children }) {
             });
             const data = await res.json();
             dispatch({type:"city/created", payload:data});
-            console.log(data)
         } catch (err) {
             dispatch({type:"rejected",payload:"There was an error creating the city..."});
         }

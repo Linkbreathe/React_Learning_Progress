@@ -11,7 +11,7 @@ import DatePicker from "react-datepicker";
 import Spinner from './Spinner';
 import Message from './Message';
 import Button from './Button'
-import {useCities} from './CitiesContext'
+import { useCities } from '../contexts/CitiesContext'
 
 export function convertToEmoji(countryCode) {
   const codePoints = countryCode
@@ -30,7 +30,7 @@ function Form() {
   const [geocodingError, setGeocodingError] = useState("");
   const [emoji, setEmoji] = useState("")
   const [lat, lng] = useUrlPosition();
-  const {createCity,isLoading} = useCities();
+  const { createCity, isLoading } = useCities();
   const navigate = useNavigate();
   useEffect(
     function () {
@@ -59,9 +59,9 @@ function Form() {
 
   function handleSumbit(e) {
     e.preventDefault();
-    if(!cityName||!date) return;
-    
-    if(lat&&lng) {
+    if (!cityName || !date) return;
+
+    if (lat && lng) {
       const newCity = {
         cityName,
         country,
@@ -76,48 +76,48 @@ function Form() {
   }
 
 
-if (isLoadingGeocoding) return <Spinner />
-if(!lat && !lng) return <Message message="Please click on the map to add a city" />
-if (geocodingError) return <Message message={geocodingError} />
+  if (isLoadingGeocoding) return <Spinner />
+  if (!lat && !lng) return <Message message="Please click on the map to add a city" />
+  if (geocodingError) return <Message message={geocodingError} />
 
 
-return (
-  <form className={`${styles.form} ${isLoading?styles.loading:''}`} onSubmit={handleSumbit}>
-    <div className={styles.row}>
-      <label htmlFor="cityName">City name</label>
-      <input
-        id="cityName"
-        onChange={(e) => setCityName(e.target.value)}
-        value={cityName}
-      />
-      <span className={styles.flag}>{emoji}</span>
-    </div>
+  return (
+    <form className={`${styles.form} ${isLoading ? styles.loading : ''}`} onSubmit={handleSumbit}>
+      <div className={styles.row}>
+        <label htmlFor="cityName">City name</label>
+        <input
+          id="cityName"
+          onChange={(e) => setCityName(e.target.value)}
+          value={cityName}
+        />
+        <span className={styles.flag}>{emoji}</span>
+      </div>
 
-    <div className={styles.row}>
-      <label htmlFor="date">When did you go to {cityName}?</label>
-      <DatePicker onChange={(date) => setDate(date)} selected={date} dateFormat='dd/MM/yyyy' />
+      <div className={styles.row}>
+        <label htmlFor="date">When did you go to {cityName}?</label>
+        <DatePicker onChange={(date) => setDate(date)} selected={date} dateFormat='dd/MM/yyyy' />
 
-    </div>
+      </div>
 
-    <div className={styles.row}>
-      <label htmlFor="notes">Notes about your trip to {cityName}</label>
-      <textarea
-        id="notes"
-        onChange={(e) => setNotes(e.target.value)}
-        value={notes}
-      />
-    </div>
+      <div className={styles.row}>
+        <label htmlFor="notes">Notes about your trip to {cityName}</label>
+        <textarea
+          id="notes"
+          onChange={(e) => setNotes(e.target.value)}
+          value={notes}
+        />
+      </div>
 
-    <div className={styles.buttons}>
-      {/* if there is no components affect the form, the form will be submitted by default button */}
-      <Button type="primary" >Add</Button>
-      <Button type="back" onClick={(e) => {
-        e.preventDefault();
-        navigate(-1);
-      }} >&larr; Back</Button>
-    </div>
-  </form>
-);
+      <div className={styles.buttons}>
+        {/* if there is no components affect the form, the form will be submitted by default button */}
+        <Button type="primary" >Add</Button>
+        <Button type="back" onClick={(e) => {
+          e.preventDefault();
+          navigate(-1);
+        }} >&larr; Back</Button>
+      </div>
+    </form>
+  );
 }
 
 export default Form;
